@@ -16,16 +16,23 @@ IF NOT EXIST "bin\" (
     MKDIR "bin"
 )
 
+ECHO.
 IF DEFINED filepath (
     ECHO === Compiling:  %filepath%
     %COMPILE% 2> %ERROR%
     IF ERRORLEVEL 1 (
-        ECHO === Compilation failed.  See "%ERROR%" for details.
         ECHO.
         TYPE "%ERROR%"
-        ECHO.
+        ECHO === Compilation failed.  See "%ERROR%" for details.
     ) ELSE (
-        ECHO === Compilation successful.
+        FOR %%A IN (%ERROR%) DO IF NOT %%~zA == 0 SET hasCompilationErrorOutput=1
+        ECHO.
+        IF NOT [!hasCompilationErrorOutput!] == [] (
+            TYPE "%ERROR%"
+            ECHO === Compilation succeeded with warnings.
+        ) ELSE (
+            ECHO === Compilation successful.
+        )
         ECHO.
         "bin\%filename%.exe" < %INPUT% > %OUTPUT% 2> %ERROR% ^
             && SET success=true ^
@@ -38,11 +45,11 @@ IF DEFINED filepath (
             ECHO === The program crashed. See "%ERROR%" for details.
             ECHO.
             TYPE "%ERROR%"
-            ECHO.
         )
     )
 ) ELSE (
     ECHO === ERROR: File not found!
 )
+ECHO.
 
 ENDLOCAL

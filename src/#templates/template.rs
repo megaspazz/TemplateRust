@@ -21,13 +21,13 @@ pub(crate) fn run(mut input: Input) -> bool {
 	init();
 	match TEST_TYPE {
 		TestType::Single => solve(&mut input, START_TEST_CASE),
-		TestType::MultiNumber => {
+		TestType::Multiple => {
 			let t = input.read();
 			for i in 0usize..t {
 				solve(&mut input, i + START_TEST_CASE);
 			}
 		}
-		TestType::MultiEof => {
+		TestType::Endless => {
 			let mut i = START_TEST_CASE;
 			while input.peek().is_some() {
 				solve(&mut input, i);
@@ -43,8 +43,8 @@ pub(crate) fn run(mut input: Input) -> bool {
 #[allow(dead_code)]
 enum TestType {
 	Single,
-	MultiNumber,
-	MultiEof,
+	Multiple,
+	Endless,
 }
 
 }
